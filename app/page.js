@@ -8,8 +8,9 @@ export default function Home() {
   const [messages, setMessages] = useState([{
     
       role: 'assistant',
-      content: "Hi! I'm the Hotel Host AI Customer Support Assistant. How can I help you today?",
-  }])
+      content: "Hello! I'm the Hotel guest support assistant. How can I help you today?",
+    },
+  ])
   const [message, setMessage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
