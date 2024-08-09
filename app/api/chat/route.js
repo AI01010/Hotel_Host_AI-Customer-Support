@@ -34,7 +34,7 @@ Example Interactions:
 Room Booking:
 
 9.1. Guest: "Can you help me book a room for next weekend?"
-9.2. AI: "Of course! I’d be happy to help you book a room for next weekend. Could you please provide me with your preferred check-in and check-out dates, as well as any room preferences you may have?"
+9.2. AI: "Of course! I'd be happy to help you book a room for next weekend. Could you please provide me with your preferred check-in and check-out dates, as well as any room preferences you may have?"
 Room Service:
 
 10.1. Guest: "I'd like to order room service, please."
@@ -52,7 +52,7 @@ export async function POST(req) {
   // Create a chat completion request to the OpenAI API
   const completion = await openai.chat.completions.create({
     messages: [{role: 'system', content: systemPrompt}, ...data], // Include the system prompt and user messages
-    model: 'gpt-4o', // Specify the model to use
+    model: 'gpt-4o', // Specify the model to use 
     stream: true, // Enable streaming responses
   })
 
