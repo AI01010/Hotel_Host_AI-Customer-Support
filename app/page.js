@@ -1,81 +1,61 @@
 'use client'
-import {Box, Stack, TextField, Button} from '@mui/material'
-import Image from 'next/image'
+import {Box, Stack, TextField, Button, Typography, Image} from '@mui/material'
 import {useState, useRef, useEffect} from 'react'
 
 export default function Home()
 {
   const [messages, setMessages] = useState
   ([{
-    role: 'assistant',
-    content: "Hello! I'm the Hotel guest support assistant. How can I help you today?"  
+    role: 'model',
+    parts: [{text: "Hello! I'm the Hotel guest support assistant. How can I help you today?"}]  
   }])
 
   const [message, setMessage] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
 
   const sendMessage = async() =>
   {
     if (!message.trim()) return; //won't send empty messages
     setMessage('')
-    setMessages((messages)=>
-    [
-      ...messages,   
-      {role: "user", content: message},
-      {role: "assistant", content: ''},
+    setMessages((messages) => [
+      ...messages,
+      { role: "user", parts: [{ text: message }] },
+      { role: "model", parts: [{ text: '' }] },
     ])
-    const response = fetch
-    (
+    await new Promise(resolve => setMessages(resolve, 100));
+    console.log(messages[1].parts[0])
+    try
+    {
+      const response = await fetch
+      (
       '/api/chat', 
       {
         method:"POST", 
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify([...messages, {role: 'user', content: message}])
+        body: JSON.stringify([...messages, {role: "user", parts: [{text: message}]}])
+        
       }
-    ).then
-    (
-      async (res) =>
-      {
-        const reader = res.body.getReader()
-        const decoder = new TextDecoder()
-        let result = ''
-        return reader.read().then
-        (
-          function processText({done, value})
-          {
-            if(done)
-            {
-              return result
-            }
-            const text = decoder.decode(value || new Int8Array(), {stream:true})
-            setMessages
-            (
-              (messages)=>
-              {
-                let lastMessage = messages[messages.length - 1]
-                let otherMessages = messages.slice(0, messages.length - 1)
-                return[...otherMessages, {...lastMessage, content: lastMessage.content + text,}]
-              }
-            )
-            return reader.read().then(processText)
-          }
-        )
-      }
-    ).catch
-    (
-        setMessages((messages) =>
+      )
+      const newMessage = await response.json()
+      setMessages((messages) =>
+      [
+        ...messages,
+        {role: "model", parts: [{text: newMessage}]},
+      ])
+    }
+    catch (e)
+    {
+      console.log(e)
+      setMessages((messages) =>
         [
           ...messages.slice(0, messages.length - 1),
-          {role: 'assistant', content: "I'm sorry, but I encountered an error, try again later."},
+          {role: "model", parts: [{text: "I'm sorry, but I encountered an error, try again later."}]},
         ]
         )
-    )
+    }
   }
-
   const messagesEndRef = useRef(null)
   const scrollToBottom = () => {messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })}
   useEffect(() => {scrollToBottom()}, [messages])
-
 
   return <Box 
   width="100vw" 
@@ -84,11 +64,19 @@ export default function Home()
   flexDirection="column"
   justifyContent="center"
   alignItems="center">
+    <Stack direction={'row'} display={'flex'}>
+        <img src="android-chrome-192x192.png" alt="Description of Image" height={'75'} width={'75'}/>
+        <Typography variant={'h4'} color={'#339fff'} padding={2}>
+          Hotel Host AI
+        </Typography>
+      </Stack>
+      
     <Stack
     direct="column"
-    width="600px"
-    height="700px"
-    border="1px solid black"
+    width="45%"
+    height="85%"
+    border="2px solid black"
+    borderRadius={10}
     p={2}
     spacing={3}>
       <Stack
@@ -98,17 +86,17 @@ export default function Home()
       overflow="auto"
       maxHeight="100%">
         {
-          messages.map((message, index)=>
+          messages.map((theMessage, index)=>
           (
             <Box 
             key={index}
             display='flex' 
-            justifyContent={message.role === 'assistant' ? 'flex-start' : 'flex-end' }>
+            justifyContent={theMessage.role === "model" ? 'flex-start' : 'flex-end' }>
                 <Box 
-                bgcolor={message.role === 'assistant' ? 'primary.main' : 'secondary.main'}
+                bgcolor={theMessage.role === "model" ? 'primary.main' : 'secondary.main'}
                 color="white"
                 borderRadius={16}
-                p={3}>{message.content}
+                p={3}>{theMessage.parts[0].text}
                 </Box>
             </Box>
           ))

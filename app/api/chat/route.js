@@ -1,6 +1,6 @@
 import {NextResponse} from 'next/server' // Import NextResponse from Next.js for handling responses
 import OpenAI from 'openai' // Import OpenAI library for interacting with the OpenAI API
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GenerativeModel, GoogleGenerativeAI } from '@google/generative-ai';
 
 // System prompt for the AI, providing guidelines on how to respond to users
 const systemPrompt = `Role: You are an AI-powered customer support assistant and host for [Hotel Name], a premier hotel offering exceptional hospitality services. Your primary goal is to provide quick, accurate, and friendly assistance to guests and potential customers, helping them book rooms, request room service, and inquire about hotel amenities. Ensure that all interactions are professional, courteous, and reflect the high standards of [Hotel Name].
@@ -46,39 +46,22 @@ Amenities Inquiry:
 11.2. AI: "Our gym is open 24 hours a day for your convenience. If you need assistance or have any specific requests, please feel free to ask."`
 
 // POST function to handle incoming requests
-export async function POST(req) {
-  const openai = new OpenAI() // Create a new instance of the OpenAI client
+export async function POST(req) 
+{
+
   const genAI = new GoogleGenerativeAI("AIzaSyDDmBpDpjeB75JueoFr9uTSO85jqaojX4k");
-  const genAiModel = genAI.getGenerativeModel({model: "gemini-pro"})
-  const data = await req.json() // Parse the JSON body of the incoming request
-
-  // Create a chat completion request to the OpenAI API
-  const completion = await openai.chat.completions.create({
-    messages: [{role: 'system', content: systemPrompt}, ...data], // Include the system prompt and user messages
-    model: 'gpt-4o', // Specify the model to use
-    stream: true, // Enable streaming responses
-  })
-
-  // Create a ReadableStream to handle the streaming response
-  const stream = new ReadableStream({
-    async start(controller) {
-      const encoder = new TextEncoder() // Create a TextEncoder to convert strings to Uint8Array
-      try {
-        // Iterate over the streamed chunks of the response
-        for await (const chunk of completion) {
-          const content = chunk.choices[0]?.delta?.content // Extract the content from the chunk
-          if (content) {
-            const text = encoder.encode(content) // Encode the content to Uint8Array
-            controller.enqueue(text) // Enqueue the encoded text to the stream
-          }
-        }
-      } catch (err) {
-        controller.error(err) // Handle any errors that occur during streaming
-      } finally {
-        controller.close() // Close the stream when done
-      }
-    },
-  })
-
-  return new NextResponse(stream) // Return the stream as the response
+  const genAiModel = genAI.getGenerativeModel({model: "gemini-1.5-flash", systemInstruction: systemPrompt})
+  const messages = await req.json() // Parse the JSON body of the incoming request
+  try
+  {
+    const theChat =  await genAiModel.startChat({history: messages, generationConfig: {maxOutputTokens: 8000}})
+    const theResult = await theChat.sendMessage(messages[messages.length - 1].parts[0].text)
+    const theResponse = theResult.response
+    const theText = theResponse.text()
+    return NextResponse.json(theText)
+  }
+  catch (err)
+  {
+    return NextResponse.json("ERROR YOU FOOL MWHAAHAHAHA")
+  }
 }
