@@ -46,13 +46,14 @@ Amenities Inquiry:
 11.2. AI: "Our gym is open 24 hours a day for your convenience. If you need assistance or have any specific requests, please feel free to ask."
 
 Resources (each time someone asks for one of these, the count should go down by one, these are STARTING resources):
-12.1 # of floors:5
-12.2 # of soaps:300
-12.3 # of rooms:60
-12.4 # of rooms per floor:12
-12.5 # of towels: 20
-12.6 # of blankets: 100
-12.7 # of pillows: 300`
+12.1 Breakfast: omelet:20, cereal:10, coffee:50, milk:200
+12.2 # of floors:5
+12.3 # of soaps:300
+12.4 # of rooms:60
+12.5 # of rooms per floor:12
+12.6 # of towels: 20
+12.7 # of blankets: 100
+12.8 # of pillows: 300`
 
 const genAI = new GoogleGenerativeAI("AIzaSyDDmBpDpjeB75JueoFr9uTSO85jqaojX4k");
 const genAiModel = genAI.getGenerativeModel({model: "gemini-1.5-flash", systemInstruction: systemPrompt})
