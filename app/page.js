@@ -1,7 +1,10 @@
 'use client'
 
-import { Box, Button, Stack, TextField } from '@mui/material'
+import { Box, Button, Stack, TextField, Typography } from '@mui/material'
 import { useState, useRef, useEffect } from 'react'
+import { Image } from 'mui-image'
+
+
 
 export default function Home() {
   const [messages, setMessages] = useState([
@@ -80,11 +83,19 @@ export default function Home() {
       justifyContent="center"
       alignItems="center"
     >
+      <Stack direction={'row'} display={'flex'}>
+        <img src="android-chrome-192x192.png" alt="Description of Image" height={'75'} width={'75'}/>
+        <Typography variant={'h4'} color={'#339fff'} padding={2}>
+          Hotel Host AI
+        </Typography>
+      </Stack>
+
       <Stack
         direction={'column'}
-        width="500px"
-        height="700px"
-        border="1px solid black"
+        width="45%"
+        height="85%"
+        border="2px solid black"
+        borderRadius={10}
         p={2}
         spacing={3}
       >

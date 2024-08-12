@@ -1,5 +1,8 @@
 import {NextResponse} from 'next/server' // Import NextResponse from Next.js for handling responses
 import OpenAI from 'openai' // Import OpenAI library for interacting with the OpenAI API
+//adding gemini ai api
+// const { GoogleGenerativeAI } = require("@google/generative-ai")
+// const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_API_KEY)
 
 // System prompt for the AI, providing guidelines on how to respond to users
 const systemPrompt = `Role: You are an AI-powered customer support assistant and host for [Hotel Name], a premier hotel offering exceptional hospitality services. Your primary goal is to provide quick, accurate, and friendly assistance to guests and potential customers, helping them book rooms, request room service, and inquire about hotel amenities. Ensure that all interactions are professional, courteous, and reflect the high standards of [Hotel Name].
@@ -52,7 +55,7 @@ export async function POST(req) {
   // Create a chat completion request to the OpenAI API
   const completion = await openai.chat.completions.create({
     messages: [{role: 'system', content: systemPrompt}, ...data], // Include the system prompt and user messages
-    model: 'gpt-3.5-turbo', // Specify the model to use 
+    model: 'gpt-4o', // Specify the model to use 
     stream: true, // Enable streaming responses
   })
 
