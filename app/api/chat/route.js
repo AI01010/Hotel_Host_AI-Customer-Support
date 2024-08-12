@@ -43,25 +43,27 @@ Room Service:
 Amenities Inquiry:
 
 11.1. Guest: "What time does the gym open?"
-11.2. AI: "Our gym is open 24 hours a day for your convenience. If you need assistance or have any specific requests, please feel free to ask."`
+11.2. AI: "Our gym is open 24 hours a day for your convenience. If you need assistance or have any specific requests, please feel free to ask."
+
+Resources (each time someone asks for one of these, the count should go down by one, these are STARTING resources):
+12.1 # of floors:5
+12.2 # of soaps:300
+12.3 # of rooms:60
+12.4 # of rooms per floor:12
+12.5 # of towels: 20
+12.6 # of blankets: 100
+12.7 # of pillows: 300`
+
+const genAI = new GoogleGenerativeAI("AIzaSyDDmBpDpjeB75JueoFr9uTSO85jqaojX4k");
+const genAiModel = genAI.getGenerativeModel({model: "gemini-1.5-flash", systemInstruction: systemPrompt})
 
 // POST function to handle incoming requests
 export async function POST(req) 
 {
-
-  const genAI = new GoogleGenerativeAI("AIzaSyDDmBpDpjeB75JueoFr9uTSO85jqaojX4k");
-  const genAiModel = genAI.getGenerativeModel({model: "gemini-1.5-flash", systemInstruction: systemPrompt})
   const messages = await req.json() // Parse the JSON body of the incoming request
-  try
-  {
-    const theChat =  await genAiModel.startChat({history: messages, generationConfig: {maxOutputTokens: 8000}})
-    const theResult = await theChat.sendMessage(messages[messages.length - 1].parts[0].text)
-    const theResponse = theResult.response
-    const theText = theResponse.text()
-    return NextResponse.json(theText)
-  }
-  catch (err)
-  {
-    return NextResponse.json("ERROR YOU FOOL MWHAAHAHAHA")
-  }
+  const theChat =  genAiModel.startChat({history: messages.slice(1, messages.length - 1)})
+  const theResult = await theChat.sendMessage(messages[messages.length - 1].parts[0].text)
+  const theResponse = theResult.response
+  const theText = theResponse.text()
+  return NextResponse.json(theText)
 }

@@ -11,20 +11,12 @@ export default function Home()
   }])
 
   const [message, setMessage] = useState('')
-
   const sendMessage = async() =>
   {
     if (!message.trim()) return; //won't send empty messages
     setMessage('')
-    setMessages((messages) => [
-      ...messages,
-      { role: "user", parts: [{ text: message }] },
-      { role: "model", parts: [{ text: '' }] },
-    ])
-    await new Promise(resolve => setMessages(resolve, 100));
-    console.log(messages[1].parts[0])
     try
-    {
+    {    
       const response = await fetch
       (
       '/api/chat', 
@@ -39,6 +31,7 @@ export default function Home()
       setMessages((messages) =>
       [
         ...messages,
+        {role: "user", parts: [{text: message}]},
         {role: "model", parts: [{text: newMessage}]},
       ])
     }
@@ -47,7 +40,8 @@ export default function Home()
       console.log(e)
       setMessages((messages) =>
         [
-          ...messages.slice(0, messages.length - 1),
+          ...messages,
+          {role: "user", parts: [{text: message}]},
           {role: "model", parts: [{text: "I'm sorry, but I encountered an error, try again later."}]},
         ]
         )
