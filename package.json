@@ -13,7 +13,7 @@
     "@emotion/styled": "^11.13.0",
     "@google/generative-ai": "^0.16.0",
     "@mui/material": "^5.16.6",
-    "mui-image": "^1.0.7",
+    "mui": "^0.0.1",
     "next": "14.2.5",
     "next-images": "^1.8.5",
     "openai": "^4.55.3",

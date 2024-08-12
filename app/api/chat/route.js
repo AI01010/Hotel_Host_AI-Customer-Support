@@ -3,6 +3,7 @@ import OpenAI from 'openai' // Import OpenAI library for interacting with the Op
 //adding gemini ai api
 // const { GoogleGenerativeAI } = require("@google/generative-ai")
 // const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_API_KEY)
+import { GenerativeModel, GoogleGenerativeAI } from '@google/generative-ai';
 
 // System prompt for the AI, providing guidelines on how to respond to users
 const systemPrompt = `Role: You are an AI-powered customer support assistant and host for [Hotel Name], a premier hotel offering exceptional hospitality services. Your primary goal is to provide quick, accurate, and friendly assistance to guests and potential customers, helping them book rooms, request room service, and inquire about hotel amenities. Ensure that all interactions are professional, courteous, and reflect the high standards of [Hotel Name].
@@ -45,7 +46,20 @@ Room Service:
 Amenities Inquiry:
 
 11.1. Guest: "What time does the gym open?"
-11.2. AI: "Our gym is open 24 hours a day for your convenience. If you need assistance or have any specific requests, please feel free to ask."`
+11.2. AI: "Our gym is open 24 hours a day for your convenience. If you need assistance or have any specific requests, please feel free to ask."
+
+Resources (each time someone asks for one of these, the count should go down by one, these are STARTING resources):
+12.1 Breakfast: omelet:20, cereal:10, coffee:50, milk:200
+12.2 # of floors:5
+12.3 # of soaps:300
+12.4 # of rooms:60
+12.5 # of rooms per floor:12
+12.6 # of towels: 20
+12.7 # of blankets: 100
+12.8 # of pillows: 300`
+
+const genAI = new GoogleGenerativeAI("AIzaSyDDmBpDpjeB75JueoFr9uTSO85jqaojX4k");
+const genAiModel = genAI.getGenerativeModel({model: "gemini-1.5-flash", systemInstruction: systemPrompt})
 
 // POST function to handle incoming requests
 export async function POST(req) {
@@ -81,4 +95,12 @@ export async function POST(req) {
   })
 
   return new NextResponse(stream) // Return the stream as the response
+export async function POST(req) 
+{
+  const messages = await req.json() // Parse the JSON body of the incoming request
+  const theChat =  genAiModel.startChat({history: messages.slice(1, messages.length - 1)})
+  const theResult = await theChat.sendMessage(messages[messages.length - 1].parts[0].text)
+  const theResponse = theResult.response
+  const theText = theResponse.text()
+  return NextResponse.json(theText)
 }
