@@ -55,7 +55,7 @@ Resources (each time someone asks for one of these, the count should go down by 
 12.7 # of blankets: 100
 12.8 # of pillows: 300`
 
-const genAI = new GoogleGenerativeAI("AIzaSyDDmBpDpjeB75JueoFr9uTSO85jqaojX4k");
+const genAI = new GoogleGenerativeAI("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
 const genAiModel = genAI.getGenerativeModel({model: "gemini-1.5-flash", systemInstruction: systemPrompt})
 
 // POST function to handle incoming requests
