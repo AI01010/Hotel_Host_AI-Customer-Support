@@ -28,8 +28,8 @@ export default function Home()
       }
       )
       const newMessage = await response.json()
-      setMessages((messages) =>
-      [
+      setMessages
+      ([
         ...messages,
         {role: "user", parts: [{text: message}]},
         {role: "model", parts: [{text: newMessage}]},
@@ -38,17 +38,19 @@ export default function Home()
     catch (e)
     {
       console.log(e)
-      setMessages((messages) =>
-        [
+      setMessages
+      ([
           ...messages,
           {role: "user", parts: [{text: message}]},
           {role: "model", parts: [{text: "I'm sorry, but I encountered an error, try again later."}]},
-        ]
-        )
+      ])
     }
   }
   const messagesEndRef = useRef(null)
-  const scrollToBottom = () => {messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })}
+  const scrollToBottom = () => {
+    messagesEndRef.current = document.getElementById(messages.length - 1)
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
   useEffect(() => {scrollToBottom()}, [messages])
 
   return <Box 
@@ -84,13 +86,15 @@ export default function Home()
           (
             <Box 
             key={index}
+            id={index}
             display='flex' 
             justifyContent={theMessage.role === "model" ? 'flex-start' : 'flex-end' }>
                 <Box 
                 bgcolor={theMessage.role === "model" ? 'primary.main' : 'secondary.main'}
                 color="white"
                 borderRadius={16}
-                p={3}>{theMessage.parts[0].text}
+                p={3}>
+                {theMessage.parts[0].text}
                 </Box>
             </Box>
           ))
