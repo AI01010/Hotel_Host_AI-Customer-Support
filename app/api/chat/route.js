@@ -51,7 +51,7 @@ Amenities Inquiry:
 
 Resources (each time someone asks for one of these, the count should go down by one, these are STARTING resources,
 restock when they at 0 stock, don't offer anything additional that is not in stock):
-12.1 Breakfast: omelet:20, cereal:10, coffee:50, milk:500, apple:50, banana: 50, baggle: 50
+12.1 Breakfast: omelet:20, cereal:10, coffee:50, milk:500, apple:50, banana: 50, bagel: 50
 12.2 # of floors:5
 12.3 # of soaps:450
 12.4 # of rooms:200
