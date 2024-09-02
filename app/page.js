@@ -69,7 +69,7 @@ export default function Home()
       
     <Stack
     direct="column"
-    width="45%"
+    width="75%"
     height="85%"
     border="2px solid black"
     borderRadius={10}
