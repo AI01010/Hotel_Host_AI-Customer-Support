@@ -4,7 +4,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Hotel Host AI",
+  title: "HotelHostAI",
   description: "An AI Chatbot that serves hotel customers with professionalism.",
 };
 
